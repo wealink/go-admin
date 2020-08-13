@@ -109,7 +109,9 @@ func Info(c *gin.Context) {
 // @Router /api/v1/users [GET]
 func GetUsers(c *gin.Context) {
 	var user models.UserView
-	//var userview
+	user.Username = c.Query("username")
+	user.Phone = c.Query("phone")
+	user.Status = c.Query("status")
 	data := make(map[string]interface{})
 	pageIndex, pageSize := util.GetPage(c)
 	data["list"] = user.GetUsers(pageIndex, pageSize)
@@ -152,11 +154,6 @@ func AddUser(c *gin.Context) {
 	if err == nil {
 		//password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		has := md5.Sum([]byte(user.Password))
-		//data["username"] = user.Username
-		//data["password"] = fmt.Sprintf("%x", has)
-		//data["phone"] = user.Phone
-		//data["status"] = user.Status
-		//data["roleid"] = user.Roleid
 		user.Password = fmt.Sprintf("%x", has)
 		user.AddUser()
 		c.JSON(e.Code_200, gin.H{
@@ -235,6 +232,40 @@ func DeleteUser(c *gin.Context) {
 			"code": e.Code_404,
 			"data": make(map[string]interface{}),
 			"msg":  e.Msg_404,
+		})
+		return
+	}
+}
+
+//重置用户密码
+func ResetUserPwd(c *gin.Context) {
+	var user models.User
+	//user.Id = com.StrTo(c.Param("id")).MustInt()
+	err := c.BindJSON(&user)
+	if err == nil {
+		if user.ExistUserByID() {
+			has := md5.Sum([]byte(user.Password))
+			user.Password = fmt.Sprintf("%x", has)
+			user.ResetUserPwd()
+			c.JSON(e.Code_200, gin.H{
+				"code": e.Code_200,
+				"data":    make(map[string]interface{}),
+				"msg":     e.UpdatedSuccess,
+			})
+			return
+		} else {
+			c.JSON(e.Code_404, gin.H{
+				"code": e.Code_404,
+				"data":    "",
+				"msg":     e.Msg_404,
+			})
+			return
+		}
+	} else {
+		c.JSON(e.Code_400, gin.H{
+			"code": e.Code_400,
+			"data":    "",
+			"msg":     e.Code_400,
 		})
 		return
 	}

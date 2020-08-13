@@ -43,6 +43,7 @@ func Auth(g *gin.RouterGroup) {
 	apiv1.GET("/user/:id", apis.GetUser)
 	apiv1.POST("/users", apis.AddUser)
 	apiv1.PUT("/users/:id", apis.EditUser)
+	apiv1.PUT("/user/:id",apis.ResetUserPwd)
 	apiv1.DELETE("/users/:id", apis.DeleteUser)
 	//角色
 	apiv1.GET("/roles", apis.GetRoles)

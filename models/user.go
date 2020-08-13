@@ -64,7 +64,18 @@ func (user *User) ExistUserByID() bool {
 
 //获取所有用户
 func (user *User) GetUsers(pageNum int, pageSize int) (users []UserView) {
-	orm.Db.Table(user.TableName()).Select([]string{"go_user.*", "go_role.name"}).Joins("left join go_role on go_user.roleid=go_role.id").Order("Id").Offset(pageNum).Limit(pageSize).Find(&users)
+	table := orm.Db.Table(user.TableName()).Select([]string{"go_user.*", "go_role.name"}).Joins("left join go_role on go_user.roleid=go_role.id")
+	if user.Username != "" {
+		table = table.Where("username = ?", user.Username)
+	}
+	if user.Phone != "" {
+		table = table.Where("phone = ?", user.Phone)
+	}
+	if user.Status != "" {
+		table = table.Where("status = ?", user.Status)
+	}
+	//table.Offset(pageNum).Limit(pageSize).Find(&UserView{})
+	table.Order("Id").Offset(pageNum).Limit(pageSize).Find(&users)
 	return
 }
 
@@ -108,6 +119,11 @@ func (user *User) EditUser() bool {
 //删除用户
 func (user *User) DeleteUser() {
 	orm.Db.Table(user.TableName()).Where("id = ?", user.Id).Delete(User{})
+}
+
+//重置用户密码
+func (user *User) ResetUserPwd ()  {
+	orm.Db.Table(user.TableName()).Where("id = ?", user.Id).Update("password",&user.Password)
 }
 
 //创建时间和修改时间更新
