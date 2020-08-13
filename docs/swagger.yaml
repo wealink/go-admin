@@ -1,0 +1,117 @@
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/v1/users:
+    get:
+      parameters:
+      - description: 身份令牌
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"captcha":200,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      summary: 获取所有用户信息
+      tags:
+      - 用户
+    post:
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: 角色ID
+        in: query
+        name: role_id
+        required: true
+        type: string
+      - description: 身份令牌
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"captcha":200,"data":{},"msg":"添加成功"}'
+          schema:
+            type: string
+      summary: 添加用户
+      tags:
+      - 用户
+  /api/v1/users/{id}:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"captcha":200,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      summary: 删除用户信息
+      tags:
+      - 用户
+    put:
+      parameters:
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: 角色ID
+        in: query
+        name: role_id
+        required: true
+        type: string
+      - description: 身份令牌
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"captcha":200,"data":{},"msg":"编辑成功"}'
+          schema:
+            type: string
+      summary: 编辑用户信息
+      tags:
+      - 用户
+  /login:
+    get:
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"captcha":200,"data":{},"msg":"token创建成功"}'
+          schema:
+            type: string
+      summary: 获取登录token
+      tags:
+      - 用户
+swagger: "2.0"

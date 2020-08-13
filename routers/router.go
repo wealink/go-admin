@@ -1,0 +1,58 @@
+package routers
+
+import (
+	"gin-example/apis"
+	_ "gin-example/docs"
+	"gin-example/middleware/jwt"
+	"gin-example/middleware/permission"
+	"gin-example/pkg/util"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+func InitRouter() *gin.Engine {
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(util.Cors())
+	r.Use(gin.Recovery())
+	gin.SetMode("debug")
+	g := r.Group("")
+	NoAuth(g)
+	Auth(g)
+	return r
+}
+
+func NoAuth(g *gin.RouterGroup) {
+	g.POST("/login", apis.Login)
+	g.GET("/logout", apis.Logout)
+	g.GET("/getcode", apis.GetCode)
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
+
+func Auth(g *gin.RouterGroup) {
+	apiv1 := g.Group("/api/v1")
+	//token校验
+	apiv1.Use(jwt.JWT())
+	//接口权限校验
+	apiv1.Use(permission.AuthCheckRole())
+	//用户信息
+	apiv1.GET("/info", apis.Info)
+	//用户
+	apiv1.GET("/users", apis.GetUsers)
+	apiv1.GET("/user/:id", apis.GetUser)
+	apiv1.POST("/users", apis.AddUser)
+	apiv1.PUT("/users/:id", apis.EditUser)
+	apiv1.DELETE("/users/:id", apis.DeleteUser)
+	//角色
+	apiv1.GET("/roles", apis.GetRoles)
+	apiv1.GET("/role/:id", apis.GetRole)
+	apiv1.POST("/roles", apis.AddRole)
+	apiv1.PUT("/roles/:id", apis.EditRole)
+	apiv1.DELETE("/roles/:id", apis.DeleteRole)
+	//菜单
+	apiv1.GET("/menus", apis.GetMenus)
+	apiv1.POST("/menus", apis.AddMenu)
+	apiv1.PUT("/menus/:id", apis.EditMenu)
+	apiv1.DELETE("/menus/:id", apis.DeleteMenu)
+}

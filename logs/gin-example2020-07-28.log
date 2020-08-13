@@ -1,0 +1,11 @@
+[INFO][main.go:38]2020/07/28 14:58:32 [Shutdown Server ...]
+[INFO][main.go:47]2020/07/28 14:58:32 [Server exiting]
+[ERROR][main.go:30]2020/07/28 14:58:32 [Listen: %s
+ http: Server closed]
+[INFO][main.go:38]2020/07/28 15:00:53 [Shutdown Server ...]
+[INFO][main.go:47]2020/07/28 15:00:53 [Server exiting]
+[ERROR][main.go:30]2020/07/28 15:00:53 [Listen: %s
+ http: Server closed]
+[INFO][main.go:38]2020/07/28 15:02:03 [Shutdown Server ...]
+[INFO][main.go:47]2020/07/28 15:02:03 [Server exiting]
+[FATAL][main.go:38]2020/07/28 15:02:07 [Shutdown Server ...]
