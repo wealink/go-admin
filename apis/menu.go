@@ -3,140 +3,121 @@ package apis
 import (
 	"gin-example/models"
 	"gin-example/pkg/e"
-	"gin-example/pkg/util"
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-	"net/http"
 )
 
 //获取所有菜单
 func GetMenus(c *gin.Context) {
-	menu := models.Menu{}
-	data := make(map[string]interface{})
-	pageIndex, pageSize := util.GetPage(c)
-	data["list"] = menu.GetMenus(pageIndex, pageSize)
-	data["total"] = menu.GetMenuTotal()
-	code := e.Code_200
-	c.JSON(http.StatusOK, gin.H{
-		"captcha": code,
+	var menu models.Menu
+	menu.Type = c.Query("type")
+	c.JSON(e.Code_200, gin.H{
+		"code": e.Code_200,
 		"msg":     e.GetSuccess,
-		"data":    data,
+		"data":    menu.GetMenus(),
 	})
-
 }
 
-//新增菜单
+//获取菜单树
+func GetTreeMenus(c *gin.Context) {
+	var menu models.Menu
+	c.JSON(e.Code_200, gin.H{
+		"code": e.Code_200,
+		"msg":     e.GetSuccess,
+		"data":    menu.GetTreeMenus(),
+	})
+}
+
+//通过id获取菜单信息
+func GetMenu(c *gin.Context) {
+	var menu models.Menu
+	menu.Id = com.StrTo(c.Param("id")).MustInt()
+	c.JSON(e.Code_200, gin.H{
+		"code": e.Code_200,
+		"msg":  e.GetSuccess,
+		"data": menu.GetMenu(),
+	})
+}
+
+//新增目录或菜单
 func AddMenu(c *gin.Context) {
-	name := c.Query("name")
-	type1 := c.Query("type")
-	path := c.Query("path")
-	method := c.Query("method")
-
-	valid := validation.Validation{}
-	valid.Required(name, "name").Message("菜单名不能为空")
-	valid.Required(type1, "type").Message("菜单类型不能为空")
-	valid.Required(path, "path").Message("路径不能为空")
-	valid.Required(method, "method").Message("请求方法类型不能为空")
-
-	data := make(map[string]interface{})
-	if valid.HasErrors() == false {
-		menu := models.Menu{}
-		data["name"] = name
-		data["type"] = type1
-		data["path"] = path
-		data["method"] = method
-		menu.AddMenu(data)
-		c.JSON(http.StatusOK, gin.H{
-			"captcha": e.Code_200,
-			"data":    make(map[string]interface{}),
-			"msg":     e.CreatedSuccess,
-		})
-		return
+	var menu models.Menu
+	err := c.BindJSON(&menu)
+	if err == nil {
+		rs := menu.AddMenu()
+		if rs == true {
+			c.JSON(e.Code_200, gin.H{
+				"code": e.Code_200,
+				"data": make(map[string]interface{}),
+				"msg":  e.CreatedSuccess,
+			})
+			return
+		} else {
+			c.JSON(e.Code_500, gin.H{
+				"code": e.Code_500,
+				"data": nil,
+				"msg":  "角色已经存在！！！",
+			})
+		}
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"captcha": e.Code_400,
-			"data":    valid.Errors,
-			"msg":     e.CreatedFail,
+		c.JSON(e.Code_400, gin.H{
+			"code": e.Code_400,
+			"data": err,
+			"msg":  e.Msg_400,
 		})
 		return
 	}
 }
 
-//编辑菜单
-//编辑用户
+//编辑角色
 func EditMenu(c *gin.Context) {
-	id := com.StrTo(c.Param("id")).MustInt()
-	name := c.Query("name")
-	type1 := c.Query("type")
-	path := c.Query("path")
-	method := c.Query("method")
-
-	valid := validation.Validation{}
-	valid.Min(id, 1, "id").Message("ID必须大于0")
-	valid.Required(name, "name").Message("菜单名不能为空")
-	valid.Required(type1, "type").Message("菜单类型不能为空")
-	valid.Required(path, "path").Message("路径不能为空")
-	valid.Required(method, "method").Message("请求方法类型不能为空")
-
-	data := make(map[string]interface{})
-	if valid.HasErrors() == false {
-		menu := models.Menu{}
-		if menu.ExistMenuByID(id) {
-			data["name"] = name
-			menu.EditMenu(id, data)
-			c.JSON(http.StatusOK, gin.H{
-				"captcha": e.Code_200,
-				"data":    make(map[string]interface{}),
-				"msg":     e.UpdatedSuccess,
+	var menu models.Menu
+	menu.Id = com.StrTo(c.Param("id")).MustInt()
+	err := c.BindJSON(&menu)
+	if err == nil {
+		if menu.ExistMenuByID() {
+			menu.EditMenu()
+			c.JSON(e.Code_200, gin.H{
+				"code": e.Code_200,
+				"data": make(map[string]interface{}),
+				"msg":  e.UpdatedSuccess,
 			})
 			return
 		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"captcha": e.Code_404,
-				"data":    valid.Errors,
-				"msg":     e.Msg_404,
+			c.JSON(e.Code_404, gin.H{
+				"code": e.Code_404,
+				"data": make(map[string]interface{}),
+				"msg":  e.Msg_404,
 			})
 			return
 		}
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"captcha": e.Code_400,
-			"data":    valid.Errors,
-			"msg":     e.UpdatedFail,
+		c.JSON(e.Code_400, gin.H{
+			"code": e.Code_400,
+			"data": "",
+			"msg":  e.Msg_400,
 		})
 		return
 	}
 }
 
-//删除菜单
+//删除用户
 func DeleteMenu(c *gin.Context) {
-	id := com.StrTo(c.Param("id")).MustInt()
-	valid := validation.Validation{}
-	valid.Min(id, 1, "id").Message("ID必须大于0")
-	if valid.HasErrors() == false {
-		menu := models.Menu{}
-		if menu.ExistMenuByID(id) {
-			menu.DeleteMenu(id)
-			c.JSON(http.StatusOK, gin.H{
-				"captcha": e.Code_200,
-				"data":    make(map[string]interface{}),
-				"msg":     e.DeletedSuccess,
-			})
-			return
-		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"captcha": e.Code_404,
-				"data":    make(map[string]interface{}),
-				"msg":     e.Msg_404,
-			})
-			return
-		}
+	var menu models.Menu
+	menu.Id = com.StrTo(c.Param("id")).MustInt()
+	if menu.ExistMenuByID() {
+		menu.DeleteMenu()
+		c.JSON(e.Code_200, gin.H{
+			"code": e.Code_200,
+			"data": make(map[string]interface{}),
+			"msg":  e.DeletedSuccess,
+		})
+		return
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"captcha": e.Code_400,
-			"data":    valid.Errors,
-			"msg":     e.DeletedFail,
+		c.JSON(e.Code_404, gin.H{
+			"code": e.Code_404,
+			"data": make(map[string]interface{}),
+			"msg":  e.Msg_404,
 		})
 		return
 	}

@@ -7,6 +7,7 @@ require (
 	github.com/astaxie/beego v1.12.2
 	github.com/casbin/casbin/v2 v2.8.6
 	github.com/casbin/gorm-adapter/v2 v2.1.0
+	github.com/chenhg5/collection v0.0.0-20191118032303-cb21bccce4c3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473
@@ -31,6 +32,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/pelletier/go-toml v1.8.0 // indirect
+	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/afero v1.3.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -43,6 +45,7 @@ require (
 	github.com/urfave/cli v1.22.4 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/image v0.0.0-20200618115811-c13761719519 // indirect
+	golang.org/x/mobile v0.0.0-20190719004257-d2bd2a29d028
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/sys v0.0.0-20200810151505-1b9f1253b3ed // indirect
 	golang.org/x/tools v0.0.0-20200727233628-55644ead90ce // indirect

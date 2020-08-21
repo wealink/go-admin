@@ -44,7 +44,7 @@ func GetRole(c *gin.Context) {
 
 //新增用户
 func AddRole(c *gin.Context) {
-	var role models.Role
+	var role models.PostRole
 	err := c.BindJSON(&role)
 	if err == nil {
 		rs := role.AddRole()
@@ -74,7 +74,8 @@ func AddRole(c *gin.Context) {
 
 //编辑角色
 func EditRole(c *gin.Context) {
-	var role models.Role
+	//var role models.Role
+	var role models.PostRole
 	role.Id = com.StrTo(c.Param("id")).MustInt()
 	err := c.BindJSON(&role)
 	if err == nil {
@@ -107,8 +108,10 @@ func EditRole(c *gin.Context) {
 //删除用户
 func DeleteRole(c *gin.Context) {
 	var role models.Role
+	var rolemenu models.RoleMenu
 	role.Id = com.StrTo(c.Param("id")).MustInt()
 	if role.ExistRoleByID() {
+		rolemenu.DeleteRoleMenu(role.Id)
 		role.DeleteRole(role.Id)
 		c.JSON(e.Code_200, gin.H{
 			"code": e.Code_200,
