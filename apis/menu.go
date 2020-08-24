@@ -101,7 +101,7 @@ func EditMenu(c *gin.Context) {
 	}
 }
 
-//删除用户
+//删除菜单
 func DeleteMenu(c *gin.Context) {
 	var menu models.Menu
 	menu.Id = com.StrTo(c.Param("id")).MustInt()

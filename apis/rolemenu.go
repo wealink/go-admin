@@ -14,7 +14,7 @@ func GetTreeRoleMenus(c *gin.Context) {
 	rolemenu.Roleid = com.StrTo(c.Param("id")).MustInt()
 	data := make(map[string]interface{})
 	data["menus"]= menu.GetTreeMenus()
-	data["checkedKeys"] = rolemenu.GetRoleMenu()
+	data["checkedKeys"] = rolemenu.GetTreeRoleMenus()
 	c.JSON(e.Code_200, gin.H{
 		"code": e.Code_200,
 		"msg":     e.GetSuccess,

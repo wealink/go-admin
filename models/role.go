@@ -102,7 +102,7 @@ func (role *PostRole) EditRole() bool {
 	return true
 }
 
-//删除用户
+//删除角色
 func (role *Role) DeleteRole(id int) {
 	orm.Db.Table(role.TableName()).Where("id = ?", id).Delete(Role{})
 }

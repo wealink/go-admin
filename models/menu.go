@@ -163,12 +163,20 @@ func (menu *Menu) AddMenu() bool {
 //编辑菜单
 func (menu *Menu) EditMenu() bool {
 	orm.Db.Table(menu.TableName()).Model(&Menu{}).Where("id = ?", menu.Id).Update(&menu)
+
 	return true
 }
 
 //删除菜单
 func (menu *Menu) DeleteMenu() {
+	orm.Db.Table(menu.TableName()).Where("id = ?", menu.Id).Find(&menu)
 	orm.Db.Table(menu.TableName()).Where("id = ?", menu.Id).Delete(Menu{})
+	//删除角色菜单关联
+	orm.Db.Table("go_role_menu").Where("menuid = ?", menu.Id).Delete(RoleMenu{})
+	//删除casbin_rule权限
+	if menu.Type == "J" {
+		orm.Db.Table("casbin_rule").Where("v1 = ?", menu.Path).Delete(CasbinRule{})
+	}
 }
 
 //创建时间和修改时间更新

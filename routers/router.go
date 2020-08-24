@@ -34,10 +34,16 @@ func Auth(g *gin.RouterGroup) {
 	apiv1 := g.Group("/api/v1")
 	//token校验
 	apiv1.Use(jwt.JWT())
+	//不需要控制接口权限
+	//用户相关
+	apiv1.GET("/info", apis.Info)
+	//角色菜单关联
+	apiv1.GET("/treemenus",apis.GetTreeMenus)
+	apiv1.GET("/treerolemenus/:id",apis.GetTreeRoleMenus)
+	apiv1.GET("/rolemenus",apis.GetRoleMenus)
 	//接口权限校验
 	apiv1.Use(permission.AuthCheckRole())
 	//用户
-	apiv1.GET("/info", apis.Info)
 	apiv1.GET("/users", apis.GetUsers)
 	apiv1.GET("/user/:id", apis.GetUser)
 	apiv1.POST("/users", apis.AddUser)
@@ -53,11 +59,8 @@ func Auth(g *gin.RouterGroup) {
 	//菜单
 	apiv1.GET("/menus", apis.GetMenus)
 	apiv1.GET("/menu/:id", apis.GetMenu)
-	apiv1.GET("/treemenus",apis.GetTreeMenus)
 	apiv1.POST("/menus", apis.AddMenu)
 	apiv1.PUT("/menus/:id", apis.EditMenu)
 	apiv1.DELETE("/menus/:id", apis.DeleteMenu)
-	//角色菜单关联
-	apiv1.GET("/treerolemenus/:id",apis.GetTreeRoleMenus)
-	apiv1.GET("/rolemenus",apis.GetRoleMenus)
+
 }

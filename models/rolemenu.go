@@ -32,7 +32,7 @@ func (RoleMenu) TableName() string {
 	return "go_role_menu"
 }
 
-//添加角色菜单关联
+//添加或编辑角色菜单关联
 func (rolemenu *RoleMenu) AddRoleMenu(roleid,menuid int) bool {
 	var menu Menu
 	var role Role
@@ -54,28 +54,43 @@ func (rolemenu *RoleMenu) AddRoleMenu(roleid,menuid int) bool {
 }
 
 //通过角色id查询菜单列表
-func (rolemenu *RoleMenu) GetRoleMenu()(menuids []int) {
+func (rolemenu *RoleMenu) GetTreeRoleMenus()(menuids []int) {
 	var menu MenuView
-	var tmp []int
+	var tmp,tmp1 []int
 	//获取目录ID列表
 	menus :=menu.GetMenus()
 	for i:=0;i<len(menus);i++{
 		tmp=append(tmp, menus[i].Id)
-		for k:=0;k<len(menus[i].Children);k++{
-			tmp=append(tmp, menus[i].Children[k].Id)
+		for j:=0;j<len(menus[i].Children);j++{
+			tmp=append(tmp, menus[i].Children[j].Id)
 		}
 	}
 	fmt.Println(tmp)
 	//获取关联列表
-	orm.Db.Table(rolemenu.TableName()).Select("menuid").Where("roleid = ?", rolemenu.Roleid).Pluck("menuid",&menuids)
+	orm.Db.Table(rolemenu.TableName()).Select("menuid").Where("roleid = ?", rolemenu.Roleid).Pluck("menuid",&tmp1)
 	//剔除关联列表中半选中的目录ID
-	if len(menuids)-len(tmp) >=0 {
-		for j := len(menuids) - len(menus); j < len(menuids); j++ {
-			if collection.Collect(tmp).Contains(menuids[j]) == true {
-				menuids = append(menuids[:j], menuids[j+1:]...)
-			}
+
+	//if len(menuids)-len(tmp) >=0 {
+	//	for k := len(menuids) - len(menus); k < len(menuids); k++ {
+	//		if collection.Collect(tmp).Contains(menuids[k]) == true {
+	//			menuids = append(menuids[:k], menuids[k+1:]...)
+	//		}
+	//	}
+	//}
+	//倒数查询半选的具体索引位置
+	var k int
+	for k = len(tmp1)-1; k > 0; k-- {
+		if collection.Collect(tmp).Contains(tmp1[k]) == true {
+			continue
+		} else {
+			break
 		}
 	}
+	//遍历到具体索引位置
+	for index :=0; index <= k; index++{
+		menuids=append(menuids,tmp1[index])
+	}
+
 	return
 }
 
