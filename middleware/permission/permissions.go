@@ -1,11 +1,11 @@
 package permission
 
 import (
-	"fmt"
 	"gin-example/pkg/e"
 	"gin-example/pkg/jwt"
 	"gin-example/pkg/permissions"
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 //权限检查中间件
