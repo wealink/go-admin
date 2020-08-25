@@ -88,7 +88,7 @@ func Info(c *gin.Context) {
 	data := make(map[string]interface{})
 	claims, _ := c.Get("claims")
 	v := claims.(*jwt.Claims)
-	data["avatar"] = "/static/uploadfile/phone.img"
+	data["avatar"] = "/static/tezign.jpg"
 	data["username"] = v.Username
 	var roles []string
 	roles = append(roles, v.Rolename)

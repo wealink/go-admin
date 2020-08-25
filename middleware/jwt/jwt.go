@@ -40,11 +40,9 @@ func JWT() gin.HandlerFunc {
 				c.Abort()
 				return
 			} else if time.Now().Unix() > claims.ExpiresAt {
-				code = e.Code_500
-				msg = "token已过期，请重新生成"
 				c.JSON(code, gin.H{
-					"captcha": code,
-					"msg":     msg,
+					"captcha": e.Code_50014,
+					"msg":     e.Code_50014,
 					"data":    data,
 				})
 				c.Abort()

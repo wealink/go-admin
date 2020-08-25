@@ -24,6 +24,7 @@ func InitRouter() *gin.Engine {
 }
 
 func NoAuth(g *gin.RouterGroup) {
+	g.Static("/static", "./static")
 	g.POST("/login", apis.Login)
 	g.GET("/logout", apis.Logout)
 	g.GET("/getcode", apis.GetCode)

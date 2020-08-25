@@ -27,7 +27,7 @@ func AuthCheckRole() gin.HandlerFunc {
 			return
 		} else {
 			res, _ := casbin.Enforce(v.Rolename, c.Request.URL.Path, c.Request.Method)
-			fmt.Println(v.Rolename, c.Request.URL.Path, c.Request.Method, res)
+			fmt.Println(v.Rolename, c.Request.URL.Path,c.Request.Method, res)
 			if res == false {
 				code := e.Code_403
 				msg := e.Msg_403
