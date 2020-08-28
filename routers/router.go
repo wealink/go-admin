@@ -35,9 +35,11 @@ func Auth(g *gin.RouterGroup) {
 	apiv1 := g.Group("/api/v1")
 	//token校验
 	apiv1.Use(jwt.JWT())
-	//不需要控制接口权限
+	//不需要接口权限
 	//用户相关
 	apiv1.GET("/info", apis.Info)
+	apiv1.PUT("/pwd", apis.Pwd)
+	apiv1.POST("/uploadavatar", apis.UploadAvatar)
 	//角色菜单关联
 	apiv1.GET("/treemenus",apis.GetTreeMenus)
 	apiv1.GET("/treerolemenus/:id",apis.GetTreeRoleMenus)

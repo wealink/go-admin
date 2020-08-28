@@ -4,6 +4,7 @@ import (
 	"gin-example/global/orm"
 	"github.com/jinzhu/gorm"
 	"time"
+	"fmt"
 )
 
 //type User struct {
@@ -19,6 +20,7 @@ type User struct {
 	Password string `json:"password"`
 	Phone    string `json:"phone"`
 	Status   string `json:"status"`
+	Avatar   string `json:"avatar"`
 	Roleid  int    `json:"roleid"`
 	// Rolename string `json:"rolename" gorm:"column:name"`
 }
@@ -82,7 +84,11 @@ func (user *User) GetUsers(pageNum int, pageSize int) (users []UserView) {
 //通过id获取角色信息
 func (user *User) GetUser() (users User) {
 	table := orm.Db.Table(user.TableName())
-	table.Where("id = ?", user.Id).Find(&users)
+	if user.Username == "" {
+		table.Where("id = ?", user.Id).Find(&users)
+	} else {
+		table.Where("username = ?", user.Username).Find(&users)
+	}
 	return
 }
 
@@ -112,9 +118,27 @@ func (user *User) AddUser() bool {
 
 //编辑用户
 func (user *User) EditUser() bool {
-	orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update(&user)
+	if user.Avatar == "" {
+		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update(&user)
+	}else{
+		orm.Db.Table(user.TableName()).Where("username = ?", user.Username).Update("avatar",user.Avatar)
+	}
 	return true
 }
+//个人中心 更新用户密码
+func (user *User) Pwd(oldpassword,newpassword string) bool {
+	fmt.Println(oldpassword,newpassword)
+	orm.Db.Table(user.TableName()).Select("id").Where("username = ? and password = ?",user.Username,oldpassword).First(&user)
+	if user.Id > 0 {
+		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update("password",newpassword)
+		return true
+	}else {
+		return false
+	}
+}
+
+//个人中心 修改用户头像
+
 
 //删除用户
 func (user *User) DeleteUser() {
