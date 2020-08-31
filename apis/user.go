@@ -9,8 +9,8 @@ import (
 	"gin-example/pkg/jwt"
 	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
-	"github.com/unknwon/com"
 	"github.com/google/uuid"
+	"github.com/unknwon/com"
 )
 
 type Auth struct {
@@ -24,12 +24,13 @@ type Pass struct {
 	Oldpassword string `json:"oldpassword"`
 	Newpassword string `json:"newpassword"`
 }
+
 // @Summary 获取登录token
 // @Tags 用户
 // @Produce  json
 // @Param username query string true "用户名"
 // @Param password query string true "密码"
-// @Success 200 {string} json "{"captcha":200,"data":{},"msg":"token创建成功"}"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"token创建成功"}"
 // @Router /login [GET]
 func Login(c *gin.Context) {
 	var (
@@ -162,7 +163,7 @@ func UploadAvatar(c *gin.Context) {
 	claims, _ := c.Get("claims")
 	v := claims.(*jwt.Claims)
 	user.Username = v.Username
-	user.Avatar = "/"+filPath
+	user.Avatar = "/" + filPath
 	user.EditUser()
 	c.JSON(e.Code_200, gin.H{
 		"code": e.Code_200,
@@ -191,7 +192,7 @@ func GetUsers(c *gin.Context) {
 	c.JSON(e.Code_200, gin.H{
 		"code": e.Code_200,
 		"msg":  e.GetSuccess,
-		"data":  data,
+		"data": data,
 	})
 
 }
@@ -228,14 +229,14 @@ func AddUser(c *gin.Context) {
 		user.AddUser()
 		c.JSON(e.Code_200, gin.H{
 			"code": e.Code_200,
-			"data":    "",
-			"msg":     e.CreatedSuccess,
+			"data": "",
+			"msg":  e.CreatedSuccess,
 		})
 		return
 	} else {
 		c.JSON(e.Code_400, gin.H{
 			"code": e.Code_400,
-			"data":    err,
+			"data": err,
 			"msg":  e.Code_400,
 		})
 		return
@@ -259,23 +260,23 @@ func EditUser(c *gin.Context) {
 			user.EditUser()
 			c.JSON(e.Code_200, gin.H{
 				"code": e.Code_200,
-				"data":    make(map[string]interface{}),
-				"msg":     e.UpdatedSuccess,
+				"data": make(map[string]interface{}),
+				"msg":  e.UpdatedSuccess,
 			})
 			return
 		} else {
 			c.JSON(e.Code_404, gin.H{
 				"code": e.Code_404,
-				"data":    "",
-				"msg":     e.Msg_404,
+				"data": "",
+				"msg":  e.Msg_404,
 			})
 			return
 		}
 	} else {
 		c.JSON(e.Code_400, gin.H{
 			"code": e.Code_400,
-			"data":    "",
-			"msg":     e.Code_400,
+			"data": "",
+			"msg":  e.Code_400,
 		})
 		return
 	}
@@ -319,23 +320,23 @@ func ResetUserPwd(c *gin.Context) {
 			user.ResetUserPwd()
 			c.JSON(e.Code_200, gin.H{
 				"code": e.Code_200,
-				"data":    make(map[string]interface{}),
-				"msg":     e.UpdatedSuccess,
+				"data": make(map[string]interface{}),
+				"msg":  e.UpdatedSuccess,
 			})
 			return
 		} else {
 			c.JSON(e.Code_404, gin.H{
 				"code": e.Code_404,
-				"data":    "",
-				"msg":     e.Msg_404,
+				"data": "",
+				"msg":  e.Msg_404,
 			})
 			return
 		}
 	} else {
 		c.JSON(e.Code_400, gin.H{
 			"code": e.Code_400,
-			"data":    "",
-			"msg":     e.Code_400,
+			"data": "",
+			"msg":  e.Code_400,
 		})
 		return
 	}
