@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/unknwon/com"
+	"github.com/mssola/user_agent"
 )
 
 type Auth struct {
@@ -57,7 +58,7 @@ func Login(c *gin.Context) {
 				} else {
 					data["token"] = token
 					code = e.Code_200
-					msg = "token创建成功"
+					msg = "登录成功"
 				}
 			} else {
 				code = e.Code_500
@@ -75,6 +76,9 @@ func Login(c *gin.Context) {
 		msg = e.Msg_400
 		data = nil
 	}
+	//登录日志
+	LoginLogToDB(c,code,msg,auth.Username)
+	//response
 	c.JSON(code, gin.H{
 		"code": code,
 		"msg":  msg,
@@ -83,11 +87,36 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
+	code := e.Code_200
+	msg := "登出成功"
+	//登出日志
+	LoginLogToDB(c, code, msg, util.GetUserName(c))
+	//response
+	c.JSON(code, gin.H{
+		"code": code,
 		"data": "",
-		"msg":  "logout",
+		"msg":  msg,
 	})
+}
+
+// Write log to database
+func LoginLogToDB(c *gin.Context, code int, msg string, username string) {
+	var loginlog models.Loginlog
+	loginlog.Username = username
+	if code == e.Code_200 {
+		loginlog.Status = "0"
+	} else {
+		loginlog.Status = "1"
+	}
+	ua := user_agent.New(c.Request.UserAgent())
+	loginlog.Ipaddr = c.ClientIP()
+	loginlog.Loginlocation = util.GetLocation(loginlog.Ipaddr)
+	browserName, browserVersion := ua.Browser()
+	loginlog.Browser = browserName + " " + browserVersion
+	loginlog.Os = ua.OS()
+	loginlog.Logintime = util.GetCurrentTime()
+	loginlog.Msg = msg
+	loginlog.AddLoginLog()
 }
 
 func Info(c *gin.Context) {

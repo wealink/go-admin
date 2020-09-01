@@ -94,7 +94,17 @@ func (user *User) GetUser() (users User) {
 
 //获取所有用户总和
 func (user *User) GetUserTotal() (count int) {
-	orm.Db.Table(user.TableName()).Count(&count)
+	table := orm.Db.Table(user.TableName())
+	if user.Username != "" {
+		table = table.Where("username = ?", user.Username)
+	}
+	if user.Phone != "" {
+		table = table.Where("phone = ?", user.Phone)
+	}
+	if user.Status != "" {
+		table = table.Where("status = ?", user.Status)
+	}
+	table.Count(&count)
 	return
 }
 

@@ -26,7 +26,6 @@ func InitRouter() *gin.Engine {
 func NoAuth(g *gin.RouterGroup) {
 	g.Static("/static", "./static")
 	g.POST("/login", apis.Login)
-	g.GET("/logout", apis.Logout)
 	g.GET("/getcode", apis.GetCode)
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
@@ -38,12 +37,14 @@ func Auth(g *gin.RouterGroup) {
 	//不需要接口权限
 	//用户相关
 	apiv1.GET("/info", apis.Info)
+	apiv1.GET("/logout", apis.Logout)
 	apiv1.PUT("/pwd", apis.Pwd)
 	apiv1.POST("/uploadavatar", apis.UploadAvatar)
 	//角色菜单关联
 	apiv1.GET("/treemenus",apis.GetTreeMenus)
 	apiv1.GET("/treerolemenus/:id",apis.GetTreeRoleMenus)
 	apiv1.GET("/rolemenus",apis.GetRoleMenus)
+
 	//接口权限校验
 	apiv1.Use(permission.AuthCheckRole())
 	//用户
@@ -65,5 +66,7 @@ func Auth(g *gin.RouterGroup) {
 	apiv1.POST("/menus", apis.AddMenu)
 	apiv1.PUT("/menus/:id", apis.EditMenu)
 	apiv1.DELETE("/menus/:id", apis.DeleteMenu)
+	//登录日志
+	apiv1.GET("/loginlogs", apis.GetLoginLogs)
 
 }
