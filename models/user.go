@@ -123,11 +123,13 @@ func (user *User) AddUser() bool {
 
 //编辑用户
 func (user *User) EditUser() bool {
-	if user.Avatar == "" {
-		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update(&user)
-	} else {
-		orm.Db.Table(user.TableName()).Where("username = ?", user.Username).Update("avatar", user.Avatar)
-	}
+	orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update(&user)
+	return true
+}
+
+//个人中心 上传用户头像
+func (user *User) UploadAvatar() bool {
+	orm.Db.Table(user.TableName()).Where("username = ?", user.Username).Update("avatar", user.Avatar)
 	return true
 }
 
