@@ -1,10 +1,10 @@
 package models
 
 import (
+	"fmt"
 	"gin-example/global/orm"
 	"github.com/jinzhu/gorm"
 	"time"
-	"fmt"
 )
 
 //type User struct {
@@ -21,7 +21,7 @@ type User struct {
 	Phone    string `json:"phone"`
 	Status   string `json:"status"`
 	Avatar   string `json:"avatar"`
-	Roleid  int    `json:"roleid"`
+	Roleid   int    `json:"roleid"`
 	// Rolename string `json:"rolename" gorm:"column:name"`
 }
 
@@ -34,21 +34,16 @@ func (User) TableName() string {
 	return "go_user"
 }
 
-func (user *User) Login(username, password string) (bool, error) {
-	err := orm.Db.Select("id").Where("username = ? and password = ?", username, password).First(&user).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return false, err
+func (user *User) Login(username, password string) bool {
+	orm.Db.Select("id").Where("username = ? and password = ?", username, password).First(&user)
+	if user.Id > 0 {
+		return true
 	}
-
-	if user.Id> 0 {
-		return true, nil
-	}
-
-	return false, nil
+	return false
 }
 
 //通过用户查询角色名
-func (user *User) GetRoleNameByUserName(username string) (string) {
+func (user *User) GetRoleNameByUserName(username string) string {
 	var userview UserView
 	orm.Db.Table(user.TableName()).Select([]string{"go_role.name"}).Joins("left join go_role on go_user.roleid=go_role.id").Where("go_user.username = ?", username).Find(&userview)
 	return userview.Rolename
@@ -119,9 +114,9 @@ func (user *User) AddUser() bool {
 	orm.Db.Table(user.TableName()).Create(&User{
 		Username: user.Username,
 		Password: user.Password,
-		Phone: user.Phone,
-		Status: user.Status,
-		Roleid: user.Roleid,
+		Phone:    user.Phone,
+		Status:   user.Status,
+		Roleid:   user.Roleid,
 	})
 	return true
 }
@@ -130,25 +125,25 @@ func (user *User) AddUser() bool {
 func (user *User) EditUser() bool {
 	if user.Avatar == "" {
 		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update(&user)
-	}else{
-		orm.Db.Table(user.TableName()).Where("username = ?", user.Username).Update("avatar",user.Avatar)
+	} else {
+		orm.Db.Table(user.TableName()).Where("username = ?", user.Username).Update("avatar", user.Avatar)
 	}
 	return true
 }
+
 //个人中心 更新用户密码
-func (user *User) Pwd(oldpassword,newpassword string) bool {
-	fmt.Println(oldpassword,newpassword)
-	orm.Db.Table(user.TableName()).Select("id").Where("username = ? and password = ?",user.Username,oldpassword).First(&user)
+func (user *User) Pwd(oldpassword, newpassword string) bool {
+	fmt.Println(oldpassword, newpassword)
+	orm.Db.Table(user.TableName()).Select("id").Where("username = ? and password = ?", user.Username, oldpassword).First(&user)
 	if user.Id > 0 {
-		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update("password",newpassword)
+		orm.Db.Table(user.TableName()).Model(&User{}).Where("id = ?", user.Id).Update("password", newpassword)
 		return true
-	}else {
+	} else {
 		return false
 	}
 }
 
 //个人中心 修改用户头像
-
 
 //删除用户
 func (user *User) DeleteUser() {
@@ -156,8 +151,8 @@ func (user *User) DeleteUser() {
 }
 
 //重置用户密码
-func (user *User) ResetUserPwd ()  {
-	orm.Db.Table(user.TableName()).Where("id = ?", user.Id).Update("password",&user.Password)
+func (user *User) ResetUserPwd() {
+	orm.Db.Table(user.TableName()).Where("id = ?", user.Id).Update("password", &user.Password)
 }
 
 //创建时间和修改时间更新

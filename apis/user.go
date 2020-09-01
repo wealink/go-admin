@@ -10,8 +10,8 @@ import (
 	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/unknwon/com"
 	"github.com/mssola/user_agent"
+	"github.com/unknwon/com"
 )
 
 type Auth struct {
@@ -45,7 +45,7 @@ func Login(c *gin.Context) {
 	data := make(map[string]interface{})
 	if err == nil {
 		has := md5.Sum([]byte(auth.Password))
-		isExist, _ := user.Login(auth.Username, fmt.Sprintf("%x", has))
+		isExist := user.Login(auth.Username, fmt.Sprintf("%x", has))
 		if isExist {
 			rolename := user.GetRoleNameByUserName(auth.Username)
 			rs := captcha.Verify(auth.Uuid, auth.Code)
@@ -77,7 +77,7 @@ func Login(c *gin.Context) {
 		data = nil
 	}
 	//登录日志
-	LoginLogToDB(c,code,msg,auth.Username)
+	LoginLogToDB(c, code, msg, auth.Username)
 	//response
 	c.JSON(code, gin.H{
 		"code": code,
