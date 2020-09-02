@@ -11,7 +11,7 @@ type Auth struct {
 
 func (auth *Auth) Login() bool {
 	var count int
-	orm.Db.Table("go_user").Where("username = ? and password = ?", auth.Username, auth.Password).Count(&count)
+	orm.Db.Table("go_user").Where("status = 0 and username = ? and password = ?", auth.Username, auth.Password).Count(&count)
 	if count > 0 {
 		return true
 	}
