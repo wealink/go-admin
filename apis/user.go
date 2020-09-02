@@ -25,9 +25,7 @@ func GetUsers(c *gin.Context) {
 	data["total"] = user.GetUserTotal()
 	data["pageIndex"] = pageIndex
 	data["pageSize"] = pageSize
-	code := e.Code_200
-	msg := e.GetSuccess
-	util.Response(c, code, data, msg)
+	util.Response(c, e.Code_200, data, e.GetSuccess)
 
 }
 
@@ -35,10 +33,7 @@ func GetUsers(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	var user models.User
 	user.Id = com.StrTo(c.Param("id")).MustInt()
-	code := e.Code_200
-	data := user.GetUser()
-	msg := e.GetSuccess
-	util.Response(c, code, data, msg)
+	util.Response(c, e.Code_200, user.GetUser(), e.GetSuccess)
 }
 
 // @Summary 添加用户
@@ -56,19 +51,9 @@ func AddUser(c *gin.Context) {
 	if err == nil {
 		user.Password = util.Md5Pwd(user.Password)
 		user.AddUser()
-		c.JSON(e.Code_200, gin.H{
-			"code": e.Code_200,
-			"data": "",
-			"msg":  e.CreatedSuccess,
-		})
-		return
+		util.Response(c, e.Code_200, "", e.CreatedSuccess)
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": err,
-			"msg":  e.Code_400,
-		})
-		return
+		util.Response(c, e.Code_400, err, e.Msg_400)
 	}
 }
 
@@ -87,27 +72,12 @@ func EditUser(c *gin.Context) {
 	if err == nil {
 		if user.ExistUserByID() {
 			user.EditUser()
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.UpdatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.UpdatedSuccess)
 		} else {
-			c.JSON(e.Code_404, gin.H{
-				"code": e.Code_404,
-				"data": "",
-				"msg":  e.Msg_404,
-			})
-			return
+			util.Response(c, e.Code_404, "", e.Msg_404)
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": "",
-			"msg":  e.Code_400,
-		})
-		return
+		util.Response(c, e.Code_400, "", e.Msg_400)
 	}
 }
 
@@ -121,19 +91,9 @@ func DeleteUser(c *gin.Context) {
 	user.Id = com.StrTo(c.Param("id")).MustInt()
 	if user.ExistUserByID() {
 		user.DeleteUser()
-		c.JSON(e.Code_200, gin.H{
-			"code": e.Code_200,
-			"data": make(map[string]interface{}),
-			"msg":  e.DeletedSuccess,
-		})
-		return
+		util.Response(c, e.Code_200, "", e.DeletedSuccess)
 	} else {
-		c.JSON(e.Code_404, gin.H{
-			"code": e.Code_404,
-			"data": make(map[string]interface{}),
-			"msg":  e.Msg_404,
-		})
-		return
+		util.Response(c, e.Code_404, "", e.Msg_404)
 	}
 }
 
@@ -146,26 +106,11 @@ func ResetUserPwd(c *gin.Context) {
 		if user.ExistUserByID() {
 			user.Password = util.Md5Pwd(user.Password)
 			user.ResetUserPwd()
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.UpdatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.UpdatedSuccess)
 		} else {
-			c.JSON(e.Code_404, gin.H{
-				"code": e.Code_404,
-				"data": "",
-				"msg":  e.Msg_404,
-			})
-			return
+			util.Response(c, e.Code_404, "", e.Msg_404)
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": "",
-			"msg":  e.Code_400,
-		})
-		return
+		util.Response(c, e.Code_400, "", e.Msg_400)
 	}
 }

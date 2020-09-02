@@ -3,6 +3,7 @@ package apis
 import (
 	"gin-example/models"
 	"gin-example/pkg/e"
+	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 )
@@ -11,32 +12,20 @@ import (
 func GetMenus(c *gin.Context) {
 	var menu models.Menu
 	menu.Type = c.Query("type")
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":     e.GetSuccess,
-		"data":    menu.GetMenus(),
-	})
+	util.Response(c, e.Code_200, menu.GetMenus(), e.GetSuccess)
 }
 
 //获取菜单树
 func GetTreeMenus(c *gin.Context) {
 	var menu models.Menu
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":     e.GetSuccess,
-		"data":    menu.GetTreeMenus(),
-	})
+	util.Response(c, e.Code_200, menu.GetTreeMenus(), e.GetSuccess)
 }
 
 //通过id获取菜单信息
 func GetMenu(c *gin.Context) {
 	var menu models.Menu
 	menu.Id = com.StrTo(c.Param("id")).MustInt()
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": menu.GetMenu(),
-	})
+	util.Response(c, e.Code_200, menu.GetMenu(), e.GetSuccess)
 }
 
 //新增目录或菜单
@@ -46,26 +35,12 @@ func AddMenu(c *gin.Context) {
 	if err == nil {
 		rs := menu.AddMenu()
 		if rs == true {
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.CreatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.CreatedSuccess)
 		} else {
-			c.JSON(e.Code_500, gin.H{
-				"code": e.Code_500,
-				"data": nil,
-				"msg":  "角色已经存在！！！",
-			})
+			util.Response(c, e.Code_500, "", "角色已经存在!")
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": err,
-			"msg":  e.Msg_400,
-		})
-		return
+		util.Response(c, e.Code_400, err, e.Msg_400)
 	}
 }
 
@@ -77,27 +52,12 @@ func EditMenu(c *gin.Context) {
 	if err == nil {
 		if menu.ExistMenuByID() {
 			menu.EditMenu()
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.UpdatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.UpdatedSuccess)
 		} else {
-			c.JSON(e.Code_404, gin.H{
-				"code": e.Code_404,
-				"data": make(map[string]interface{}),
-				"msg":  e.Msg_404,
-			})
-			return
+			util.Response(c, e.Code_404, "", e.Msg_404)
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": "",
-			"msg":  e.Msg_400,
-		})
-		return
+		util.Response(c, e.Code_400, "", e.Msg_400)
 	}
 }
 
@@ -107,19 +67,8 @@ func DeleteMenu(c *gin.Context) {
 	menu.Id = com.StrTo(c.Param("id")).MustInt()
 	if menu.ExistMenuByID() {
 		menu.DeleteMenu()
-		c.JSON(e.Code_200, gin.H{
-			"code": e.Code_200,
-			"data": make(map[string]interface{}),
-			"msg":  e.DeletedSuccess,
-		})
-		return
+		util.Response(c, e.Code_200, "", e.DeletedSuccess)
 	} else {
-		c.JSON(e.Code_404, gin.H{
-			"code": e.Code_404,
-			"data": make(map[string]interface{}),
-			"msg":  e.Msg_404,
-		})
-		return
+		util.Response(c, e.Code_404, "", e.Msg_404)
 	}
-
 }

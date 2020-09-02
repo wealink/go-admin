@@ -27,24 +27,12 @@ func Pwd(c *gin.Context) {
 	if err == nil {
 		rs := user.Pwd(util.Md5Pwd(pass.Oldpassword), util.Md5Pwd(pass.Newpassword))
 		if rs == true {
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": data,
-				"msg":  "info",
-			})
+			util.Response(c, e.Code_200, data, e.UpdatedSuccess)
 		} else {
-			c.JSON(e.Code_500, gin.H{
-				"code": e.Code_500,
-				"data": "",
-				"msg":  e.Msg_500,
-			})
+			util.Response(c, e.Code_500, "", e.Msg_500)
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": "",
-			"msg":  e.Msg_400,
-		})
+		util.Response(c, e.Code_400, "", e.Msg_400)
 	}
 }
 
@@ -67,9 +55,5 @@ func UploadAvatar(c *gin.Context) {
 	user.Username = v.Username
 	user.Avatar = "/" + filPath
 	user.UploadAvatar()
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"data": user.Avatar,
-		"msg":  e.Code_200,
-	})
+	util.Response(c, e.Code_200, user.Avatar, e.UpdatedSuccess)
 }

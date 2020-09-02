@@ -24,22 +24,14 @@ func GetRoles(c *gin.Context) {
 	data["total"] = role.GetRolesTotal()
 	data["pageIndex"] = pageIndex
 	data["pageSize"] = pageSize
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": data,
-	})
+	util.Response(c, e.Code_200, data, e.GetSuccess)
 }
 
 //通过id获取角色信息
 func GetRole(c *gin.Context) {
 	var role models.Role
 	role.Id = com.StrTo(c.Param("id")).MustInt()
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": role.GetRole(),
-	})
+	util.Response(c, e.Code_200, role.GetRole(), e.GetSuccess)
 }
 
 //新增用户
@@ -49,26 +41,12 @@ func AddRole(c *gin.Context) {
 	if err == nil {
 		rs := role.AddRole()
 		if rs == true {
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.CreatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.CreatedSuccess)
 		} else {
-			c.JSON(e.Code_500, gin.H{
-				"code": e.Code_500,
-				"data": nil,
-				"msg":  "角色已经存在！！！",
-			})
+			util.Response(c, e.Code_500, "", "角色已经存在！")
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": err,
-			"msg":  e.Msg_400,
-		})
-		return
+		util.Response(c, e.Code_400, err, e.Msg_400)
 	}
 }
 
@@ -81,27 +59,12 @@ func EditRole(c *gin.Context) {
 	if err == nil {
 		if role.ExistRoleByID() {
 			role.EditRole()
-			c.JSON(e.Code_200, gin.H{
-				"code": e.Code_200,
-				"data": make(map[string]interface{}),
-				"msg":  e.UpdatedSuccess,
-			})
-			return
+			util.Response(c, e.Code_200, "", e.UpdatedSuccess)
 		} else {
-			c.JSON(e.Code_404, gin.H{
-				"code": e.Code_404,
-				"data": make(map[string]interface{}),
-				"msg":  e.Msg_404,
-			})
-			return
+			util.Response(c, e.Code_404, "", e.Msg_404)
 		}
 	} else {
-		c.JSON(e.Code_400, gin.H{
-			"code": e.Code_400,
-			"data": "",
-			"msg":  e.Msg_400,
-		})
-		return
+		util.Response(c, e.Code_400, "", e.Msg_400)
 	}
 }
 
@@ -113,19 +76,8 @@ func DeleteRole(c *gin.Context) {
 	if role.ExistRoleByID() {
 		rolemenu.DeleteRoleMenu(role.Id)
 		role.DeleteRole(role.Id)
-		c.JSON(e.Code_200, gin.H{
-			"code": e.Code_200,
-			"data": make(map[string]interface{}),
-			"msg":  e.DeletedSuccess,
-		})
-		return
+		util.Response(c, e.Code_200, "", e.DeletedSuccess)
 	} else {
-		c.JSON(e.Code_404, gin.H{
-			"code": e.Code_404,
-			"data": make(map[string]interface{}),
-			"msg":  e.Msg_404,
-		})
-		return
+		util.Response(c, e.Code_404, "", e.Msg_404)
 	}
-
 }

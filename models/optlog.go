@@ -21,6 +21,15 @@ func (Optlog) TableName() string {
 //获取所有日志
 func (log *Optlog) GetOptLogs(pageNum int, pageSize int) (logs []Optlog) {
 	table := orm.Db.Table(log.TableName())
+	if log.Username != "" {
+		table = table.Where("username = ?", log.Username)
+	}
+	if log.Method != "" {
+		table = table.Where("method = ?", log.Method)
+	}
+	if log.Status != "" {
+		table = table.Where("status = ?", log.Status)
+	}
 	table.Order("Id DESC").Offset(pageNum).Limit(pageSize).Find(&logs)
 	return
 }
@@ -28,6 +37,15 @@ func (log *Optlog) GetOptLogs(pageNum int, pageSize int) (logs []Optlog) {
 //获取所有日志总和
 func (log *Optlog) GetOptLogsTotal() (count int) {
 	table := orm.Db.Table(log.TableName())
+	if log.Username != "" {
+		table = table.Where("username = ?", log.Username)
+	}
+	if log.Method != "" {
+		table = table.Where("method = ?", log.Method)
+	}
+	if log.Status != "" {
+		table = table.Where("status = ?", log.Status)
+	}
 	table.Count(&count)
 	return
 }

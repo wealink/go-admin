@@ -18,9 +18,5 @@ func GetLoginLogs(c *gin.Context) {
 	data["total"] = log.GetLoginLogsTotal()
 	data["pageIndex"] = pageIndex
 	data["pageSize"] = pageSize
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": data,
-	})
+	util.Response(c, e.Code_200, data, e.GetSuccess)
 }
