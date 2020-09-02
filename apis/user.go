@@ -1,14 +1,10 @@
 package apis
 
 import (
-	"crypto/md5"
-	"fmt"
 	"gin-example/models"
 	"gin-example/pkg/e"
-	// "gin-example/pkg/jwt"
 	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
-	// "github.com/google/uuid"
 	"github.com/unknwon/com"
 )
 
@@ -29,25 +25,20 @@ func GetUsers(c *gin.Context) {
 	data["total"] = user.GetUserTotal()
 	data["pageIndex"] = pageIndex
 	data["pageSize"] = pageSize
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": data,
-	})
+	code := e.Code_200
+	msg := e.GetSuccess
+	util.Response(c, code, data, msg)
 
 }
 
 // 通过ID获取用户信息
-//通过id获取角色信息
 func GetUser(c *gin.Context) {
 	var user models.User
 	user.Id = com.StrTo(c.Param("id")).MustInt()
-
-	c.JSON(e.Code_200, gin.H{
-		"code": e.Code_200,
-		"msg":  e.GetSuccess,
-		"data": user.GetUser(),
-	})
+	code := e.Code_200
+	data := user.GetUser()
+	msg := e.GetSuccess
+	util.Response(c, code, data, msg)
 }
 
 // @Summary 添加用户
@@ -63,9 +54,7 @@ func AddUser(c *gin.Context) {
 	var user models.User
 	err := c.BindJSON(&user)
 	if err == nil {
-		//password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		has := md5.Sum([]byte(user.Password))
-		user.Password = fmt.Sprintf("%x", has)
+		user.Password = util.Md5Pwd(user.Password)
 		user.AddUser()
 		c.JSON(e.Code_200, gin.H{
 			"code": e.Code_200,
@@ -155,8 +144,7 @@ func ResetUserPwd(c *gin.Context) {
 	err := c.BindJSON(&user)
 	if err == nil {
 		if user.ExistUserByID() {
-			has := md5.Sum([]byte(user.Password))
-			user.Password = fmt.Sprintf("%x", has)
+			user.Password = util.Md5Pwd(user.Password)
 			user.ResetUserPwd()
 			c.JSON(e.Code_200, gin.H{
 				"code": e.Code_200,

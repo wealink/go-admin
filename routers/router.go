@@ -41,9 +41,9 @@ func Auth(g *gin.RouterGroup) {
 	apiv1.PUT("/pwd", apis.Pwd)
 	apiv1.POST("/uploadavatar", apis.UploadAvatar)
 	//角色菜单关联
-	apiv1.GET("/treemenus",apis.GetTreeMenus)
-	apiv1.GET("/treerolemenus/:id",apis.GetTreeRoleMenus)
-	apiv1.GET("/rolemenus",apis.GetRoleMenus)
+	apiv1.GET("/treemenus", apis.GetTreeMenus)
+	apiv1.GET("/treerolemenus/:id", apis.GetTreeRoleMenus)
+	apiv1.GET("/rolemenus", apis.GetRoleMenus)
 
 	//接口权限校验
 	apiv1.Use(permission.AuthCheckRole())
@@ -52,7 +52,7 @@ func Auth(g *gin.RouterGroup) {
 	apiv1.GET("/user/:id", apis.GetUser)
 	apiv1.POST("/users", apis.AddUser)
 	apiv1.PUT("/users/:id", apis.EditUser)
-	apiv1.PUT("/user/:id",apis.ResetUserPwd)
+	apiv1.PUT("/user/:id", apis.ResetUserPwd)
 	apiv1.DELETE("/users/:id", apis.DeleteUser)
 	//角色
 	apiv1.GET("/roles", apis.GetRoles)
@@ -66,7 +66,8 @@ func Auth(g *gin.RouterGroup) {
 	apiv1.POST("/menus", apis.AddMenu)
 	apiv1.PUT("/menus/:id", apis.EditMenu)
 	apiv1.DELETE("/menus/:id", apis.DeleteMenu)
-	//登录日志
+	//日志
 	apiv1.GET("/loginlogs", apis.GetLoginLogs)
+	apiv1.GET("/optlogs", apis.GetOptLogs)
 
 }

@@ -1,8 +1,6 @@
 package apis
 
 import (
-	"crypto/md5"
-	"fmt"
 	"gin-example/models"
 	"gin-example/pkg/captcha"
 	"gin-example/pkg/e"
@@ -11,13 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mssola/user_agent"
 )
-
-type Auth struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Uuid     string `json:"uuid" binding:"required"`
-	Code     string `json:"code" binding:"required"`
-}
 
 // @Summary 获取登录token
 // @Tags 用户
@@ -31,14 +22,14 @@ func Login(c *gin.Context) {
 		code int
 		msg  string
 		user models.User
-		auth Auth
+		auth models.Auth
 		err  error
 	)
 	err = c.BindJSON(&auth)
 	data := make(map[string]interface{})
 	if err == nil {
-		has := md5.Sum([]byte(auth.Password))
-		isExist := user.Login(auth.Username, fmt.Sprintf("%x", has))
+		auth.Password = util.Md5Pwd(auth.Password)
+		isExist := auth.Login()
 		if isExist {
 			rolename := user.GetRoleNameByUserName(auth.Username)
 			rs := captcha.Verify(auth.Uuid, auth.Code)

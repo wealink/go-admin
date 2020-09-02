@@ -6,7 +6,7 @@ type Optlog struct {
 	Base
 	Username    string `json:"username"`    // 用户名
 	Url         string `json:"url"`         // 请求url
-	Method      string `json:"method"`      //请求方法
+	Method      string `json:"method"`      // 请求方法
 	Status      string `json:"status"`      // 状态
 	Msg         string `json:"msg"`         // 消息
 	Ipaddr      string `json:"ipaddr"`      // IP地址
@@ -16,6 +16,20 @@ type Optlog struct {
 
 func (Optlog) TableName() string {
 	return "go_optlog"
+}
+
+//获取所有日志
+func (log *Optlog) GetOptLogs(pageNum int, pageSize int) (logs []Optlog) {
+	table := orm.Db.Table(log.TableName())
+	table.Order("Id DESC").Offset(pageNum).Limit(pageSize).Find(&logs)
+	return
+}
+
+//获取所有日志总和
+func (log *Optlog) GetOptLogsTotal() (count int) {
+	table := orm.Db.Table(log.TableName())
+	table.Count(&count)
+	return
 }
 
 //添加登录登出记录

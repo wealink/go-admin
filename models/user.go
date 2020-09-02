@@ -34,13 +34,13 @@ func (User) TableName() string {
 	return "go_user"
 }
 
-func (user *User) Login(username, password string) bool {
-	orm.Db.Select("id").Where("username = ? and password = ?", username, password).First(&user)
-	if user.Id > 0 {
-		return true
-	}
-	return false
-}
+//func (user *User) Login(username, password string) bool {
+//	orm.Db.Select("id").Where("username = ? and password = ?", username, password).First(&user)
+//	if user.Id > 0 {
+//		return true
+//	}
+//	return false
+//}
 
 //通过用户查询角色名
 func (user *User) GetRoleNameByUserName(username string) string {

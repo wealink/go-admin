@@ -1,11 +1,11 @@
 package apis
 
 import (
-	"crypto/md5"
 	"fmt"
 	"gin-example/models"
 	"gin-example/pkg/e"
 	"gin-example/pkg/jwt"
+	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -25,9 +25,7 @@ func Pwd(c *gin.Context) {
 	user.Username = v.Username
 	err := c.BindJSON(&pass)
 	if err == nil {
-		hasold := md5.Sum([]byte(pass.Oldpassword))
-		hasnew := md5.Sum([]byte(pass.Newpassword))
-		rs := user.Pwd(fmt.Sprintf("%x", hasold), fmt.Sprintf("%x", hasnew))
+		rs := user.Pwd(util.Md5Pwd(pass.Oldpassword), util.Md5Pwd(pass.Newpassword))
 		if rs == true {
 			c.JSON(e.Code_200, gin.H{
 				"code": e.Code_200,
