@@ -22,18 +22,18 @@ CREATE TABLE `go_user` (
   `password` varchar(50) DEFAULT '' COMMENT '密码',
   `phone` varchar(11) DEFAULT '' COMMENT '手机号',
   `status` int(1) unsigned DEFAULT '0' COMMENT '状态值',
+  `avatar` varchar(50)  DEFAULT '' COMMENT '头像',
   `roleid` int(10) unsigned NOT NULL COMMENT '角色ID',
   `created_on` int(11) unsigned DEFAULT NULL COMMENT '创建时间',
   `modified_on` int(11) unsigned DEFAULT NULL COMMENT '更新时间',
   `deleted_on` int(11) unsigned DEFAULT '0' COMMENT '删除时间戳',
   PRIMARY KEY (`id`),
   FOREIGN KEY (roleid) REFERENCES go_role(id)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户管理';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户管理';
 
-INSERT INTO `go_user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '15936007872', '0', '1',NULL,NULL,'0');
-INSERT INTO `go_user` VALUES ('2', 'devlop', 'e10adc3949ba59abbe56e057f20f883e', NULL, '0', '2',NULL,NULL,'0');
-INSERT INTO `go_user` VALUES ('3', 'test', 'e10adc3949ba59abbe56e057f20f883e', NULL, '0', '3',NULL,NULL,'0');
-
+INSERT INTO `go_user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '15936007872', '0', '/static/96d3f7fa-62cf-464a-886a-37e3dc27930b.jpg', '1',NULL,NULL,'0');
+INSERT INTO `go_user` VALUES ('2', 'devlop', 'e10adc3949ba59abbe56e057f20f883e', NULL, '0', '/static/tezign.jpg', '2',NULL,NULL,'0');
+INSERT INTO `go_user` VALUES ('3', 'test', 'e10adc3949ba59abbe56e057f20f883e', NULL, '0', '/static/tezign.jpg', '3',NULL,NULL,'0');
 
 
 DROP TABLE IF EXISTS `go_menu`;
@@ -53,10 +53,10 @@ CREATE TABLE `go_menu` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户管理';
 
-INSERT INTO `go_menu` VALUES ('1','Sys','/sys','系统管理','sys','Layout',NULL,'M',NULL,NULL,NULL,'0');
+INSERT INTO `go_menu` VALUES ('1','Sys','/sys','系统管理','example','Layout',NULL,'M',NULL,NULL,NULL,'0');
 INSERT INTO `go_menu` VALUES ('2','User','user','用户管理','user','user','1','C',NULL,NULL,NULL,'0');
-INSERT INTO `go_menu` VALUES ('3','Role','role','角色管理','role','role','1','C',NULL,NULL,NULL,'0');
-INSERT INTO `go_menu` VALUES ('4','Menu','menu','菜单管理','menu','menu','1','C',NULL,NULL,NULL,'0');
+INSERT INTO `go_menu` VALUES ('3','Role','role','角色管理','peoples','role','1','C',NULL,NULL,NULL,'0');
+INSERT INTO `go_menu` VALUES ('4','Menu','menu','菜单管理','tree-table','menu','1','C',NULL,NULL,NULL,'0');
 INSERT INTO `go_menu` VALUES ('5', '', '/api/v1/users', '查询用户列表', '', '', '2', 'J', 'GET', '1597997193', '0', NULL);
 INSERT INTO `go_menu` VALUES ('6','','/api/v1/user/:id','查询单个用户','','','2','J','GET','1597997328','0',NULL);
 INSERT INTO `go_menu` VALUES ('7','','/api/v1/users','添加用户','','','2','J','POST','1597997405','0',NULL);
@@ -73,6 +73,10 @@ INSERT INTO `go_menu` VALUES ('17','','/api/v1/menu/:id','查看单个菜单',''
 INSERT INTO `go_menu` VALUES ('18','','/api/v1/menus','添加菜单','','','4','J','POST','1598255130','0',NULL);
 INSERT INTO `go_menu` VALUES ('19','','/api/v1/menus/:id','修改菜单','','','4','J','PUT','1598255167','0',NULL);
 INSERT INTO `go_menu` VALUES ('20','','/api/v1/menus/:id','删除菜单','','','4','J','DELETE','1598255202','0',NULL);
+INSERT INTO `go_menu` VALUES ('21','Loginlog','loginlog','登录日志','logininfor','loginlog','1','C',NULL,NULL,NULL,'0');
+INSERT INTO `go_menu` VALUES ('22','Optlog','optlog','操作日志','skill','optlog','1','C',NULL,NULL,NULL,'0');
+INSERT INTO `go_menu` VALUES ('23', '', '/api/v1/loginlogs', '登录日志列表', '', '', '21', 'J', 'GET', '1598932720', '0', NULL);
+INSERT INTO `go_menu` VALUES ('24', '', '/api/v1/optlogs', '操作日志列表', '', '', '22', 'J', 'GET', '1598932720', '0', NULL);
 
 
 DROP TABLE IF EXISTS `go_role_menu`;
@@ -86,7 +90,7 @@ CREATE TABLE `go_role_menu` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (roleid) REFERENCES go_role(id),
   FOREIGN KEY (menuid) REFERENCES go_menu(id)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色菜单关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色菜单关联';
 
 INSERT INTO `go_role_menu` VALUES ('1','1','1','0','0',NULL);
 INSERT INTO `go_role_menu` VALUES ('2','1','2','0','0',NULL);
@@ -108,6 +112,45 @@ INSERT INTO `go_role_menu` VALUES ('17','1','17','0','0',NULL);
 INSERT INTO `go_role_menu` VALUES ('18','1','18','0','0',NULL);
 INSERT INTO `go_role_menu` VALUES ('19','1','19','0','0',NULL);
 INSERT INTO `go_role_menu` VALUES ('20','1','20','0','0',NULL);
+INSERT INTO `go_role_menu` VALUES ('21','1','21','0','0',NULL);
+INSERT INTO `go_role_menu` VALUES ('22','1','22','0','0',NULL);
+INSERT INTO `go_role_menu` VALUES ('23','1','23', '0', '0', NULL);
+
+
+DROP TABLE IF EXISTS `go_loginlog`;
+CREATE TABLE `go_loginlog` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) DEFAULT NULL COMMENT '用户名',
+  `status` int(1) unsigned DEFAULT '0' COMMENT '状态值',
+  `ipaddr` varchar(50) DEFAULT NULL COMMENT 'IP地址',
+  `loginlocation` varchar(100) DEFAULT NULL COMMENT '归属地',
+  `browser` varchar(100) DEFAULT NULL COMMENT '浏览器类型',
+  `os` varchar(100) DEFAULT NULL COMMENT '操作系统',
+  `logintime` int(11) unsigned DEFAULT NULL COMMENT '登录时间',
+  `msg` varchar(100) DEFAULT NULL COMMENT '响应消息',
+  `created_on` int(11) unsigned DEFAULT NULL COMMENT '创建时间',
+  `modified_on` int(11) unsigned DEFAULT NULL COMMENT '更新时间',
+  `deleted_on` int(11) unsigned DEFAULT '0' COMMENT '删除时间戳',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录登出日志';
+
+
+DROP TABLE IF EXISTS `go_optlog`;
+CREATE TABLE `go_optlog` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) DEFAULT NULL COMMENT '用户名',
+  `url` varchar(50) DEFAULT NULL COMMENT '请求URL',
+  `method` varchar(10) DEFAULT NULL COMMENT '请求方法',
+  `status` int(1) unsigned DEFAULT '0' COMMENT '状态值',
+  `msg` varchar(100) DEFAULT NULL COMMENT '响应消息',
+  `ipaddr` varchar(50) DEFAULT NULL COMMENT 'IP地址',
+  `optlocation` varchar(100) DEFAULT NULL COMMENT '归属地',
+  `opttime` int(11) unsigned DEFAULT NULL COMMENT '操作时间',
+  `created_on` int(11) unsigned DEFAULT NULL COMMENT '创建时间',
+  `modified_on` int(11) unsigned DEFAULT NULL COMMENT '更新时间',
+  `deleted_on` int(11) unsigned DEFAULT '0' COMMENT '删除时间戳',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='操作日志';
 
 
 DROP TABLE IF EXISTS `casbin_rule`;
@@ -119,7 +162,7 @@ CREATE TABLE `casbin_rule` (
   `v3` varchar(100) DEFAULT NULL COMMENT '',
   `v4` varchar(100) DEFAULT NULL COMMENT '',
   `v5` varchar(100) DEFAULT NULL COMMENT ''
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='casbin_rule接口权限';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='casbin_rule接口权限';
 
 INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/users','GET',NULL,NULL,NULL);
 INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/user/:id','GET',NULL,NULL,NULL);
@@ -137,3 +180,5 @@ INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/menu/:id','GET',NULL,
 INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/menus','POST',NULL,NULL,NULL);
 INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/menus/:id','PUT',NULL,NULL,NULL);
 INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/menus/:id','DELETE',NULL,NULL,NULL);
+INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/loginlogs','GET',NULL,NULL,NULL);
+INSERT INTO `casbin_rule` VALUES ('p','运维部','/api/v1/optlogs','GET',NULL,NULL,NULL);
